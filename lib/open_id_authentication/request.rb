@@ -6,7 +6,7 @@ module OpenIdAuthentication
 
     def request_method_with_openid
       if !parameters[:_method].blank? && parameters[:open_id_complete] == '1'
-        parameters[:_method].to_sym
+        parameters[:_method]
       else
         request_method_without_openid
       end

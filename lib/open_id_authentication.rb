@@ -10,7 +10,7 @@ require File.dirname(__FILE__) + '/open_id_authentication/request'
 require File.dirname(__FILE__) + '/open_id_authentication/timeout_fixes' if OpenID::VERSION == "2.0.4"
 
 module OpenIdAuthentication
-  OPEN_ID_AUTHENTICATION_DIR = RAILS_ROOT + "/tmp/openids"
+  OPEN_ID_AUTHENTICATION_DIR = Rails.root + "/tmp/openids"
 
   def self.store
     @@store
@@ -220,8 +220,10 @@ module OpenIdAuthentication
     def requested_url
       relative_url_root = self.class.respond_to?(:relative_url_root) ?
         self.class.relative_url_root.to_s :
-        request.relative_url_root
-      "#{request.protocol}#{request.host_with_port}#{ActionController::Base.relative_url_root}#{request.path}"
+        request.respond_to?(:relative_url_root) ?
+        request.relative_url_root :
+        config.relative_url_root
+      "#{request.protocol}#{request.host_with_port}#{relative_url_root}#{request.path}"
     end
 
     def timeout_protection_from_identity_server
